@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Mapbox</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+   
+</head>
+<body>
+    <!-- Chỉ đường -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+
+
+    <div id='map' style='width: 800px; height: 800px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaGlldWRtIiwiYSI6ImNsZmh2dWxtdTBoODMzenFwZXlnbHF5czIifQ.MNtyb149qJNwzdcY0MpSFg';
+        
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [105.85, 21.0], //Tọa độ lãnh thổ Việt Nam
+            zoom: 12.0
+        });
+        //Marker: Điểm đánh dấu
+        var marker = new mapboxgl.Marker({
+            color: "red", //Màu của Marker là đỏ
+            draggable: true,
+            anchor: 'bottom', //Nhãn Hà Nội nằm dưới Marker
+        }).setLngLat([105.85, 21.0]) //Thiết lập Marker tại hà Nội
+            .addTo(map);
+
+        //Thêm popup
+        //var popup = new mapboxgl.Popup({
+        //    closeButton: true,
+        //    closeOnClick: false,
+        //    anchor: 'right',
+        //}).setLngLat([105.85, 21.0])
+        //    .setHTML("<h1>Hello HN!</h1>")
+        //    .addTo(map);
+
+        //NavigationControl: Nút Zoom + - và la bàn
+        map.addControl(new mapboxgl.NavigationControl({
+            showCompass: true,
+            showZoom: true,
+        }));
+        //GeolocateControl: Vị trí của thiết bị
+        map.addControl(new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true
+        }));
+        //Scale Control: Khoảng cách trên bản đồ so với thực tế
+        var scale = new mapboxgl.ScaleControl({
+            maxWidth: 80,
+            unit: 'imperial'
+        });
+        map.addControl(scale);
+        scale.setUnit('metric');
+        //Full screen
+        map.addControl(new mapboxgl.FullscreenControl());
+
+        //Khởi tạo một Marker
+        var marker = new mapboxgl.Marker({
+            color: 'blue',
+            draggable: true,
+        });
+        //Sự kiện click vào bản đồ
+        map.on('click', function (e) {
+            //Hiển thị marker
+            marker.setLngLat([e.lngLat.lng, e.lngLat.lat])
+                .addTo(map);
+        });
+
+        //Chỉ đường
+        map.addControl(new MapboxDirections({
+            accessToken: mapboxgl.accessToken
+        }),
+            'top-left'
+        );
+        mapboxgl.setLocale('vi');
+    </script>
+</body>
+</html>
